@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from bangazon_api.helpers import STATE_NAMES
 from bangazon_api.models import Category
 from bangazon_api.models.product import Product
+from bangazon_api.models.rating import Rating
 
 
 class ProductTests(APITestCase):
@@ -101,3 +102,28 @@ class ProductTests(APITestCase):
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+    def test_rate_product(self):
+        """ensure we can add a rating to a product
+        and the average_rating for the product is also updated
+        """
+        product = Product.objects.first()
+        rating = {
+            "score": 1,
+            "review": "it was average"
+        }
+
+        url = f'/api/products/{product.id}/rate-product'
+        response = self.client.post(url, rating, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.get(f'/api/products/{product.id}')
+
+        total_rating = 0
+        for rating in response.data['ratings']:
+            total_rating += rating['score']
+        average_rating = total_rating / len(response.data['ratings'])
+
+        self.assertEqual(response.data['average_rating'], average_rating)
+
