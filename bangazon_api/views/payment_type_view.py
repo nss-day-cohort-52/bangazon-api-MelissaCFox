@@ -29,7 +29,7 @@ class PaymentTypeView(ViewSet):
     @swagger_auto_schema(
         request_body=CreatePaymentType,
         responses={
-            201: openapi.Response(
+            200: openapi.Response(
                 description="Returns the created payment type",
                 schema=PaymentTypeSerializer()
             ),
@@ -39,6 +39,33 @@ class PaymentTypeView(ViewSet):
             )
         }
     )
+
+
+    def retrieve(self, request, pk):
+        """Get a list of payment types for the current user"""
+        try:
+            payment_types = PaymentType.objects.get(pk=pk)
+            serializer = PaymentTypeSerializer(payment_types, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except PaymentType.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+
+
+    @swagger_auto_schema(
+        request_body=CreatePaymentType,
+        responses={
+            200: openapi.Response(
+                description="Returns the created payment type",
+                schema=PaymentTypeSerializer()
+            ),
+            400: openapi.Response(
+                description="Validation Error",
+                schema=MessageSerializer()
+            )
+        }
+    )
+
+
     def create(self, request):
         """Create a payment type for the current user"""
         try:
@@ -63,7 +90,7 @@ class PaymentTypeView(ViewSet):
             )
         }
     )
-    def delete(self, request, pk):
+    def destroy(self, request, pk):
         """Delete a payment type"""
         try:
             payment_type = PaymentType.objects.get(pk=pk)
