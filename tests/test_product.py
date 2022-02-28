@@ -8,6 +8,7 @@ from django.core.management import call_command
 from django.contrib.auth.models import User
 from bangazon_api.helpers import STATE_NAMES
 from bangazon_api.models import Category
+from bangazon_api.models.order import Order
 from bangazon_api.models.product import Product
 from bangazon_api.models.rating import Rating
 
@@ -127,3 +128,17 @@ class ProductTests(APITestCase):
 
         self.assertEqual(response.data['average_rating'], average_rating)
 
+
+    def test_add_to_order(self):
+        """ensure that adding a product to order adds it to an open
+        order and not a closed one"""
+
+        product = Product.objects.first()
+        url = f'/api/products/{product.id}/add_to_order'
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        ## check that the user has an un-completed order
+        order = Order.objects.get(
+            user=self.user1, completed_on=None, payment_type=None)
+        self.assertIsNotNone(order)
