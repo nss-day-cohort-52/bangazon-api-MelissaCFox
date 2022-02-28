@@ -16,9 +16,9 @@ class OrderTests(APITestCase):
         """
         call_command('seed_db', user_count=3)
         self.user1 = User.objects.filter(store=None).first()
-        self.token = Token.objects.get(user=self.user1)
-
         self.user2 = User.objects.filter(store=None).last()
+
+        self.token = Token.objects.get(user=self.user1)
         product = Product.objects.get(pk=1)
 
         self.order1 = Order.objects.create(
@@ -42,12 +42,13 @@ class OrderTests(APITestCase):
             customer_id = 1
         )
 
-    # def test_list_orders(self):
-    #     # ! NEED TO FIX THIS ONE - response data should only have a length of 1?
-    #     """The orders list should return a list of orders for the logged in user"""
-    #     response = self.client.get('/api/orders')
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(len(response.data), 1)
+    def test_list_orders(self):
+        # seed data populates each new user with one completed and one uncompleted orders (2)
+        # then setup creates an additional order for users 1 and 2 (both have a total of 3 orders)
+        """The orders list should return a list of orders for the logged in user"""
+        response = self.client.get('/api/orders')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 3)
 
 
     def test_delete_order(self):
