@@ -2,6 +2,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
+from django.db.models import Q
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from bangazon_api.models import PaymentType
@@ -18,7 +19,10 @@ class PaymentTypeView(ViewSet):
     })
     def list(self, request):
         """Get a list of payment types for the current user"""
-        payment_types = PaymentType.objects.all()
+        customer = request.auth.user
+        payment_types = PaymentType.objects.filter(
+            Q(customer=customer)
+        )
         serializer = PaymentTypeSerializer(payment_types, many=True)
         return Response(serializer.data)
 

@@ -31,9 +31,11 @@ class Product(models.Model):
         total_rating = 0
         for rating in self.ratings.all():
             total_rating += rating.score
-
-        avg = total_rating / self.ratings.count()
-        return avg
+        try:
+            avg = total_rating / self.ratings.count()
+            return avg
+        except ZeroDivisionError:
+            return "n/a"
 
     @property
     def number_purchased(self):
