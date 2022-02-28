@@ -1,2 +1,2 @@
-delete from bangazon_api_rating
-where product_id = 1
+delete from bangazon_api_paymenttype
+where id=9
