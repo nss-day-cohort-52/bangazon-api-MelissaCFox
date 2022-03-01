@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bangazon Reports</title>
+  </head>
+  <body>
+    <h1>Favorite Sellers by Customer</h1>
+
+    <ul>
+        {% if favorite_sellers_by_customers_list|length %}
+            {% for customer in favorite_sellers_by_customers_list %}
+                <h3>{{ customer.customer }}</h3>
+                    {% for store in customer.stores %}
+                        <li>Store: {{store.store}}</li>
+                    {% endfor %}
+            {% endfor %}
+        {% else %}
+            <p>No customers have favorited a store</p>
+        {% endif %}
+    </ul>
+  </body>
+</html>
