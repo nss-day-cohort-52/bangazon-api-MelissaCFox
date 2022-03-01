@@ -168,6 +168,7 @@ class ProductView(ViewSet):
         direction = request.query_params.get('direction', None)
         name = request.query_params.get('name', None)
         location = request.query_params.get('location', None)
+        min_price = request.query_params.get('min_price', None)
 
 
         if number_sold:
@@ -187,6 +188,9 @@ class ProductView(ViewSet):
 
         if location is not None:
             products = products.filter(location__contains=location)
+
+        if min_price is not None:
+            products = products.filter(price__gte=min_price)
 
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
