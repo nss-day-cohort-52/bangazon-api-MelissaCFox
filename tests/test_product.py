@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from django.core.management import call_command
 from django.contrib.auth.models import User
 from bangazon_api.helpers import STATE_NAMES
-from bangazon_api.models import Category
+from bangazon_api.models import Category, OrderProduct
 from bangazon_api.models.order import Order
 from bangazon_api.models.product import Product
 from bangazon_api.models.rating import Rating
@@ -139,6 +139,16 @@ class ProductTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         ## check that the user has an un-completed order
-        order = Order.objects.get(
-            user=self.user1, completed_on=None, payment_type=None)
-        self.assertIsNotNone(order)
+        # order = Order.objects.get(
+        #     user=self.user1, completed_on=None, payment_type=None)
+        # self.assertIsNotNone(order)
+
+        response2 = self.client.get('/api/orders/current')
+
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+
+        existing_order_product = OrderProduct.objects.get(
+            order=response2.data["id"], product=product)
+
+        self.assertIsNotNone(existing_order_product)
+
