@@ -424,6 +424,6 @@ class ProductView(ViewSet):
         """Get all liked products for current user"""
         user = User.objects.get(pk=request.auth.user.id)
 
-        products = Product.objects.filter(like__user=user)
+        products = Product.objects.filter(like__customer=user)
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
