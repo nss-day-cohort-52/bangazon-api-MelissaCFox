@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bangazon Reports</title>
+  </head>
+  <body>
+    <h1>Inxpensive Products (less than $1000)</h1>
+
+    <ul>
+        {% if inexpensive_products_list|length %}
+            <h2>{{inexpensive_products_list|length}} Products:</h2>
+            {% for product in inexpensive_products_list %}
+            <li>
+                <h3>{{ product.name }}</h3>
+                <p>Price: {{product.price}} </p>
+                <p>Store: {{product.store}}</p>
+            </li>
+            {% endfor %}
+        {% else %}
+            <p>There are currently no products that cost less than $1,000</p>
+        {% endif %}
+    </ul>
+  </body>
+</html>

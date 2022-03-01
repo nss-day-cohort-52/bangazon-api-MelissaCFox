@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bangazon Reports</title>
+  </head>
+  <body>
+    <h1>Expensive Products ($1000+)</h1>
+
+    <ul>
+        {% if expensive_products_list|length %}
+        <h2>{{expensive_products_list|length}} Products:</h2>
+            {% for product in expensive_products_list %}
+            <li>
+                <h3>{{ product.name }}</h3>
+                <p>Price: {{product.price}} </p>
+                <p>Store: {{product.store}}</p>
+            </li>
+            {% endfor %}
+        {% else %}
+            <p>There are currently no products that cost $1,000 or more</p>
+        {% endif %}
+    </ul>
+  </body>
+</html>
