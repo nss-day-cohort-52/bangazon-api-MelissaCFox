@@ -27,7 +27,6 @@ class PaymentTypeView(ViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(
-        request_body=CreatePaymentType,
         responses={
             200: openapi.Response(
                 description="Returns the created payment type",
@@ -39,7 +38,6 @@ class PaymentTypeView(ViewSet):
             )
         }
     )
-
 
     def retrieve(self, request, pk):
         """Get a list of payment types for the current user"""
@@ -54,7 +52,7 @@ class PaymentTypeView(ViewSet):
     @swagger_auto_schema(
         request_body=CreatePaymentType,
         responses={
-            200: openapi.Response(
+            201: openapi.Response(
                 description="Returns the created payment type",
                 schema=PaymentTypeSerializer()
             ),
@@ -64,7 +62,6 @@ class PaymentTypeView(ViewSet):
             )
         }
     )
-
 
     def create(self, request):
         """Create a payment type for the current user"""

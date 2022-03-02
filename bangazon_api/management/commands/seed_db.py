@@ -14,6 +14,8 @@ class Command(BaseCommand):
     faker = Faker()
     faker.add_provider(faker_commerce.Provider)
 
+    # Base Command class has no arguments by default so we need to add
+    # user_count argument in order to use it in create_users below
     def add_arguments(self, parser):
         # Positional arguments
         parser.add_argument(
@@ -30,6 +32,8 @@ class Command(BaseCommand):
     def create_users(self, user_count=8):
         """Create random users"""
         for _ in range(user_count):
+            # for each integer (blank variable since we won't need to use it)
+            # create a user, payment type, and token
             first_name = self.faker.first_name()
             last_name = self.faker.last_name()
             username = f'{first_name}_{last_name}@example.com'
@@ -55,6 +59,10 @@ class Command(BaseCommand):
                 self.create_products(store, user_count)
         users = User.objects.all()
 
+        # for each user that is being created, create and open order
+        # and create a closed order
+        # if the user that is being created has an odd id, also create ratings
+        # (located futher down), which creates ratings from that user for each product
         for user in users:
             self.create_closed_orders(user)
             self.create_open_orders(user)
@@ -87,6 +95,8 @@ class Command(BaseCommand):
             )
 
     def create_closed_orders(self, user):
+        """create a closed order by creating an order for the user
+        with truthy values for payment_type and completed_on"""
         order = Order.objects.create(
             user=user,
             payment_type=user.payment_types.first(),
@@ -98,6 +108,8 @@ class Command(BaseCommand):
         order.products.set(products)
 
     def create_open_orders(self, user):
+        """create an open order by creating an order for the user with default
+        falsy values for payment and completed"""
         order = Order.objects.create(
             user=user
         )
@@ -107,6 +119,7 @@ class Command(BaseCommand):
         order.products.set(products)
 
     def create_favorite(self, user):
+        """create a store favorite for the user with a randomly selected store"""
         store = Store.objects.get(pk=random.randint(1, Store.objects.count()))
 
         Favorite.objects.create(
@@ -115,6 +128,7 @@ class Command(BaseCommand):
         )
 
     def create_ratings(self, user):
+        """create a randomly scored rating for each product for the user"""
         for product in Product.objects.all():
             Rating.objects.create(
                 customer=user,

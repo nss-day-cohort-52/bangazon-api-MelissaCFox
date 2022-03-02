@@ -106,6 +106,7 @@ class StoreView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
 
+
     @action(methods=['post'], detail=True)
     def favorite(self, request, pk):
         """create a favorite store for the current user

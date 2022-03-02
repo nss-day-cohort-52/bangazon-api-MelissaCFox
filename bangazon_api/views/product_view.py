@@ -16,6 +16,8 @@ from bangazon_api.serializers import (
 
 
 class ProductView(ViewSet):
+    # swagger_auto_schema is a decorator that generates html documentation
+    # on the Swagger site for the server (localhost:8000/swagger)
     @swagger_auto_schema(
         request_body=CreateProductSerializer,
         responses={
@@ -229,6 +231,7 @@ class ProductView(ViewSet):
             ),
         }
     )
+    
     @action(methods=['post'], detail=True)
     def add_to_order(self, request, pk):
         """Add a product to the current users open order"""
@@ -241,10 +244,11 @@ class ProductView(ViewSet):
         except Product.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
+
     @swagger_auto_schema(
         method='DELETE',
         responses={
-            201: openapi.Response(
+            204: openapi.Response(
                 description="Returns message that product was deleted from the order",
                 schema=MessageSerializer()
             ),
@@ -385,6 +389,7 @@ class ProductView(ViewSet):
         except Product.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
+
     @swagger_auto_schema(
         method='DELETE',
         responses={
@@ -414,7 +419,7 @@ class ProductView(ViewSet):
     @swagger_auto_schema(
         responses={
             200: openapi.Response(
-                description="The list of products",
+                description="List of liked products",
                 schema=ProductSerializer(many=True)
             )
         }

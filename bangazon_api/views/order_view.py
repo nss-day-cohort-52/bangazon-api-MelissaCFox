@@ -12,7 +12,8 @@ from bangazon_api.serializers.message_serializer import MessageSerializer
 
 
 class OrderView(ViewSet):
-
+    # swagger_auto_schema is a decorator that generates html documentation
+    # on the Swagger site (localhost:8000/swagger)
     @swagger_auto_schema(responses={
         200: openapi.Response(
             description="The list of orders for the current user",
@@ -46,7 +47,7 @@ class OrderView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(method='put', request_body=UpdateOrderSerializer, responses={
-        200: openapi.Response(
+        204: openapi.Response(
             description="Returns a message that the order was completed",
             schema=MessageSerializer()
         ),
